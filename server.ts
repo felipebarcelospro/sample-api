@@ -1,19 +1,21 @@
 import { PrismaClient } from '@prisma/client';
 import express from 'express';
+import cors from 'cors';
 
 const app = express();
 const prisma = new PrismaClient()
 
 app.use(express.json());
+app.use(cors())
 
-app.get('/users', async (req, res) => {
-  const users = await prisma.user.findMany()
+app.get('/todos', async (req, res) => {
+  const todos = await prisma.todo.findMany()
 
-  res.send(users)
+  res.send(todos)
 });
 
-app.get('/users/:id', async (req, res) => {
-  const user = await prisma.user.findUnique({
+app.get('/todos/:id', async (req, res) => {
+  const user = await prisma.todo.findUnique({
     where: {
       id: req.params.id
     }
@@ -22,33 +24,33 @@ app.get('/users/:id', async (req, res) => {
   res.send(user)
 });
 
-app.post('/users', async (req, res) => {
-  const user = await prisma.user.create({
+app.post('/todos', async (req, res) => {
+  const user = await prisma.todo.create({
     data: {
-      name: req.body.name,
-      email: req.body.email
+      title: req.body.title,
+      completed: req.body.completed
     }
   })
 
   res.send(user)
 });
 
-app.put('/users/:id', async (req, res) => {
-  const user = await prisma.user.update({
+app.put('/todos/:id', async (req, res) => {
+  const user = await prisma.todo.update({
     where: {
       id: req.params.id
     },
     data: {
-      name: req.body.name,
-      email: req.body.email
+      title: req.body.title,
+      completed: req.body.completed
     }
   })
 
   res.send(user)
 });
 
-app.delete('/users/:id', async (req, res) => {
-  await prisma.user.delete({
+app.delete('/todos/:id', async (req, res) => {
+  await prisma.todo.delete({
     where: {
       id: req.params.id
     }
